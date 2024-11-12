@@ -4,7 +4,7 @@ This project is a web application for detecting languages using a Flask-based ba
 
 ## Live Demo
 
-Access the live application deployed on Render: [Your Render App URL](https://your-render-app-url.com)
+Access the live application deployed on Render: [language-detector](https://language-detector-eg92.onrender.com)
 
 ## Project Structure
 
