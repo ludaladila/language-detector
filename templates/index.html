@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Detector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="glassmorphism sticky top-0 z-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold gradient-text">Language Detector</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="historyBtn" class="p-2 text-gray-600 hover:text-indigo-600 transition-colors rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                    <button id="themeToggle" class="p-2 text-gray-600 hover:text-indigo-600 transition-colors rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 max-w-4xl">
+        <!-- Title Section -->
+        <div class="text-center my-12">
+            <h1 class="text-5xl font-bold gradient-text mb-4 leading-relaxed">Language Detector</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-lg mb-6">Advanced Multilingual Detection System</p>
+            <div class="flex justify-center items-center gap-4">
+                <span class="feature-badge ai px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium whitespace-nowrap">
+                    AI Powered
+                </span>
+                <span class="feature-badge languages px-4 py-2 bg-purple-100 text-purple-600 rounded-full text-sm font-medium whitespace-nowrap">
+                    21 Languages
+                </span>
+                <span class="feature-badge realtime px-4 py-2 bg-green-100 text-green-600 rounded-full text-sm font-medium whitespace-nowrap">
+                    Real-time
+                </span>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="glassmorphism rounded-2xl p-8 hover-scale custom-shadow">
+            <!-- Text Input Area -->
+            <div class="mb-6">
+                <div class="relative">
+                    <textarea 
+                        id="inputText"
+                        class="w-full h-48 p-5 border-2 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-all duration-300"
+                        placeholder="Enter your text here for language detection..."></textarea>
+                    <div class="char-count absolute bottom-4 right-4 text-sm px-2 py-1 rounded-md">
+                        <span id="charCount">0</span> characters
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button Area -->
+            <div class="flex justify-between items-center">
+                <div class="flex space-x-2">
+                    <button id="clearBtn" class="px-4 py-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-300 flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        <span>Clear</span>
+                    </button>
+                    <button id="pasteBtn" class="px-4 py-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-300 flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <span>Paste</span>
+                    </button>
+                </div>
+                <button id="detectBtn" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-8 py-3 rounded-lg transition-all duration-300 flex items-center space-x-2 shadow-md hover:shadow-lg">
+                    <span id="btnText">Detect Language</span>
+                    <svg id="loadingIcon" class="animate-spin ml-2 h-5 w-5 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Result Area -->
+            <div id="resultArea" class="mt-8 hidden">
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 id="detectedLanguage" class="text-xl font-semibold"></h3>
+                        <button id="copyResult" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center space-x-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                            </svg>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Confidence Level</div>
+                        <div class="relative pt-1">
+                            <div class="flex mb-2 items-center justify-between">
+                                <div>
+                                    <span id="confidenceValue" class="text-lg font-semibold text-indigo-600 dark:text-indigo-400"></span>
+                                </div>
+                            </div>
+                            <div class="overflow-hidden h-3 mb-4 text-xs flex rounded-full bg-gray-100 dark:bg-gray-700">
+                                <div id="confidenceBar" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-indigo-500 to-purple-600 transition-all duration-1000"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Area -->
+            <div id="errorArea" class="mt-8 hidden">
+                <div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-6 rounded-lg">
+                    <div class="flex items-center">
+                        <svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p id="errorMessage" class="text-red-700 dark:text-red-400 font-medium ml-3"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supported Languages Section -->
+        <div class="mt-12 glassmorphism rounded-xl p-8">
+            <h3 class="text-center text-xl font-semibold mb-6">Supported Languages</h3>
+            <div class="flex flex-wrap justify-center gap-2">
+                <span class="language-pill">English</span>
+                <span class="language-pill">Arabic</span>
+                <span class="language-pill">Bulgarian</span>
+                <span class="language-pill">German</span>
+                <span class="language-pill">Greek</span>
+                <span class="language-pill">Spanish</span>
+                <span class="language-pill">French</span>
+                <span class="language-pill">Hindi</span>
+                <span class="language-pill">Italian</span>
+                <span class="language-pill">Japanese</span>
+                <span class="language-pill">Korean</span>
+                <span class="language-pill">Dutch</span>
+                <span class="language-pill">Polish</span>
+                <span class="language-pill">Portuguese</span>
+                <span class="language-pill">Russian</span>
+                <span class="language-pill">Swahili</span>
+                <span class="language-pill">Thai</span>
+                <span class="language-pill">Turkish</span>
+                <span class="language-pill">Urdu</span>
+                <span class="language-pill">Vietnamese</span>
+                <span class="language-pill">Chinese</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Detection History</h2>
+                    <button id="closeHistory" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="historyList" class="space-y-4">
+                    <!-- History items will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM
+        const elements = {
+            inputText: document.getElementById('inputText'),
+            charCount: document.getElementById('charCount'),
+            detectBtn: document.getElementById('detectBtn'),
+            clearBtn: document.getElementById('clearBtn'),
+            pasteBtn: document.getElementById('pasteBtn'),
+            resultArea: document.getElementById('resultArea'),
+            errorArea: document.getElementById('errorArea'),
+            btnText: document.getElementById('btnText'),
+            loadingIcon: document.getElementById('loadingIcon'),
+            historyBtn: document.getElementById('historyBtn'),
+            historyModal: document.getElementById('historyModal'),
+            closeHistory: document.getElementById('closeHistory'),
+            historyList: document.getElementById('historyList'),
+            copyResult: document.getElementById('copyResult'),
+            themeToggle: document.getElementById('themeToggle')
+        };
+
+        // change the topic
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        // load the topic
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+            document.body.classList.add('dark-mode');
+            updateThemeIcon(true);
+        }
+
+        function updateThemeIcon(isDark) {
+            elements.themeToggle.innerHTML = isDark 
+                ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                   </svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                   </svg>`;
+        }
+
+        elements.themeToggle.addEventListener('click', () => {
+            const isDarkMode = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            updateThemeIcon(!isDarkMode);
+        });
+
+        // monitor
+        prefersDarkScheme.addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                if (e.matches) {
+                    document.body.classList.add('dark-mode');
+                    updateThemeIcon(true);
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    updateThemeIcon(false);
+                }
+            }
+        });
+
+        // count
+        elements.inputText.addEventListener('input', () => {
+            elements.charCount.textContent = elements.inputText.value.length;
+        });
+
+        // clear
+        elements.clearBtn.addEventListener('click', () => {
+            elements.inputText.value = '';
+            elements.charCount.textContent = '0';
+            elements.resultArea.classList.add('hidden');
+            elements.errorArea.classList.add('hidden');
+        });
+
+        // paste
+        elements.pasteBtn.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                elements.inputText.value = text;
+                elements.charCount.textContent = text.length;
+            } catch (err) {
+                showError('Unable to paste text. Please paste manually.');
+            }
+        });
+
+        // copy
+        elements.copyResult.addEventListener('click', async () => {
+            const resultText = document.getElementById('detectedLanguage').textContent;
+            try {
+                await navigator.clipboard.writeText(resultText);
+                elements.copyResult.innerHTML = '<span>Copied!</span>';
+                setTimeout(() => {
+                    elements.copyResult.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                        <span>Copy</span>`;
+                }, 2000);
+            } catch (err) {
+                showError('Failed to copy text.');
+            }
+        });
+
+        // detection functionality
+        elements.detectBtn.addEventListener('click', async () => {
+            const text = elements.inputText.value.trim();
+            
+            if (!text) {
+                showError('Please enter text for detection');
+                return;
+            }
+
+            try {
+                elements.detectBtn.disabled = true;
+                elements.btnText.textContent = 'Detecting...';
+                elements.loadingIcon.classList.remove('hidden');
+                elements.errorArea.classList.add('hidden');
+
+                const response = await fetch('/detect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    elements.resultArea.classList.remove('hidden');
+                    document.getElementById('detectedLanguage').textContent = 
+                        `Detected Language: ${data.language_name}`;
+                    document.getElementById('confidenceValue').textContent = 
+                        `${data.confidence}%`;
+                    
+                    setTimeout(() => {
+                        document.getElementById('confidenceBar').style.width = 
+                            `${data.confidence}%`;
+                    }, 100);
+                } else {
+                    throw new Error(data.error || 'Detection failed');
+                }
+            } catch (error) {
+                showError(error.message || 'An error occurred');
+            } finally {
+                elements.detectBtn.disabled = false;
+                elements.btnText.textContent = 'Detect Language';
+                elements.loadingIcon.classList.add('hidden');
+            }
+        });
+
+        // show error
+        function showError(message) {
+            elements.errorArea.classList.remove('hidden');
+            document.getElementById('errorMessage').textContent = message;
+            elements.resultArea.classList.add('hidden');
+        }
+
+        // history
+        elements.historyBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/history');
+                const history = await response.json();
+                
+                elements.historyList.innerHTML = history.length ? history.map(item => `
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">${item.result.timestamp}</div>
+                        <div class="text-gray-700 dark:text-gray-300 mt-1">${item.text}</div>
+                        <div class="text-indigo-600 dark:text-indigo-400 mt-2">
+                            ${item.result.language_name} (${item.result.confidence}%)
+                        </div>
+                    </div>
+                `).join('') : '<div class="text-center text-gray-500 dark:text-gray-400">No detection history yet</div>';
+                
+                elements.historyModal.classList.remove('hidden');
+            } catch (err) {
+                showError('Failed to load history.');
+            }
+        });
+
+        elements.closeHistory.addEventListener('click', () => {
+            elements.historyModal.classList.add('hidden');
+        });
+
+
+        window.addEventListener('click', (e) => {
+            if (e.target === elements.historyModal) {
+                elements.historyModal.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+/* Base styles */
+body {
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Light theme variables */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a5568;
+    --border-color: #e2e8f0;
+    --card-bg: #ffffff;
+    --input-bg: #ffffff;
+    --hover-color: rgba(99, 102, 241, 0.1);
+}
+
+/* Dark theme variables */
+body.dark-mode {
+    --bg-primary: #1a1b26;
+    --bg-secondary: #24283b;
+    --text-primary: #ffffff;
+    --text-secondary: #9699a3;
+    --border-color: #414868;
+    --card-bg: #1f2335;
+    --input-bg: #1f2335;
+    --hover-color: rgba(122, 162, 247, 0.1);
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.dark-mode .gradient-text {
+    background: linear-gradient(135deg, #7aa2f7 0%, #bb9af7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.glassmorphism {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.custom-shadow {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.dark-mode .custom-shadow {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.hover-scale {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.hover-scale:hover {
+    transform: translateY(-2px);
+}
+
+.language-pill {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin: 0.25rem;
+    display: inline-block;
+}
+
+.language-pill:hover {
+    border-color: #7aa2f7;
+    background-color: var(--hover-color);
+}
+
+.feature-badge {
+    transition: all 0.3s ease;
+}
+
+.dark-mode .feature-badge.ai {
+    background-color: rgba(122, 162, 247, 0.2);
+    color: #7aa2f7;
+}
+
+.dark-mode .feature-badge.languages {
+    background-color: rgba(187, 154, 247, 0.2);
+    color: #bb9af7;
+}
+
+.dark-mode .feature-badge.realtime {
+    background-color: rgba(158, 206, 106, 0.2);
+    color: #9ece6a;
+}
+
+textarea {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.dark-mode textarea:focus {
+    border-color: #7aa2f7 !important;
+    box-shadow: 0 0 0 2px rgba(122, 162, 247, 0.2) !important;
+}
+
+.char-count {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
